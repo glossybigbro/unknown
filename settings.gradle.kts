@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -11,6 +12,8 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -21,4 +24,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "unknown"
 include(":app")
- 

@@ -1,31 +1,345 @@
+# -----------------------------------------------------------
+# [versions]: 버전 정보 (모든 라이브러리와 플러그인 버전은 이곳에서 관리)
+# -----------------------------------------------------------
 [versions]
-agp = "8.6.0"
-kotlin = "1.9.0"
-coreKtx = "1.10.1"
-junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.6.1"
-activityCompose = "1.8.0"
-composeBom = "2024.04.01"
 
+## AndroidX
+# https://developer.android.com/jetpack/androidx/releases/core
+# AndroidX Core KTX: Kotlin 확장 기능을 제공하여 Android API 사용을 간편하게 만들어주는 라이브러리
+androidxCore = "1.13.1"
+# https://developer.android.com/jetpack/androidx/releases/lifecycle
+# Lifecycle Runtime KTX: Android 생명주기 관리를 쉽게 해주는 라이브러리
+androidxLifecycle = "2.8.6"
+# https://developer.android.com/jetpack/androidx/releases/activity
+# Activity Compose: Jetpack Compose에서 Activity와 상호작용을 관리하는 라이브러리
+androidxActivity = "1.9.2"
+# https://developer.android.com/jetpack/androidx/releases/navigation
+# Navigation Compose: Jetpack Compose에서 화면 간의 내비게이션을 쉽게 구현할 수 있는 라이브러리
+androidxComposeNavigation = "2.8.2"
+# https://developer.android.com/jetpack/androidx/releases/appcompat
+# AppCompat: 다양한 Android 버전에서 하위 호환성을 제공하는 라이브러리
+appcompat = "1.7.0"
+
+## Compose
+# https://developer.android.com/develop/ui/compose/bom
+# Compose BOM: Jetpack Compose 관련 라이브러리의 버전을 일괄적으로 관리하는 BOM 라이브러리
+composeBom = "2024.09.03"
+
+## Material Components
+# https://github.com/material-components/material-components-android/releases
+# Material Design Components: Material Design을 구현할 수 있는 Android UI 라이브러리
+material = "1.12.0"
+
+# Hilt
+# https://github.com/google/dagger/releases
+# Hilt: Google의 의존성 주입 라이브러리로, 간편한 DI 구성을 지원
+hilt = "2.52"
+# https://developer.android.com/jetpack/androidx/releases/hilt
+# Hilt Navigation Compose: Hilt와 Jetpack Compose의 통합을 지원하는 라이브러리
+hiltNavigationCompose = "1.2.0"
+
+## 네트워크
+# https://square.github.io/okhttp/
+# OkHttp: Square에서 제공하는 HTTP 클라이언트 라이브러리로, 네트워크 요청을 간단하게 처리
+okhttp = "4.12.0"
+# https://github.com/square/retrofit
+# Retrofit: Square에서 제공하는 REST API 클라이언트 라이브러리로, 서버와의 통신을 쉽게 관리
+retrofit = "2.11.0"
+
+## Kotlin Symbol Processing
+# https://github.com/google/ksp/
+# Kotlin Symbol Processing (KSP): Kotlin에서 애노테이션 프로세싱을 지원하는 라이브러리
+ksp = "2.0.20-1.0.24"
+
+## Android Gradle Plugin
+# https://developer.android.com/build/releases/gradle-plugin
+# Android Gradle Plugin: Android 프로젝트의 빌드를 관리하는 필수 Gradle 플러그인
+androidGradlePlugin = "8.4.2"
+
+## Kotlin
+# https://github.com/JetBrains/kotlin
+# Kotlin: Kotlin 언어와 관련된 컴파일러 및 도구를 제공하는 라이브러리
+kotlin = "2.0.20"
+# https://github.com/Kotlin/kotlinx.collections.immutable
+# kotlinxImmutable 버전: 불변 컬렉션 라이브러리
+kotlinxImmutable = "0.3.7"
+
+# https://github.com/Kotlin/kotlinx.coroutines
+# Kotlin Coroutines: 비동기 프로그래밍을 위한 코루틴 라이브러리
+coroutine = "1.9.0-RC"
+
+## 테스트
+# https://github.com/junit-team/junit4
+# JUnit4: Java 기반의 단위 테스트를 위한 라이브러리
+junit4 = "4.13.2"
+# https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine
+# JUnit Vintage Engine: JUnit 5에서 JUnit 4로 작성된 테스트를 실행할 수 있게 해주는 호환성 라이브러리
+junitVintageEngine = "5.10.2"
+# https://developer.android.com/jetpack/androidx/releases/test
+# AndroidX JUnit Extension: Android에서 JUnit 테스트를 확장하여 사용하는 라이브러리
+androidxTestExt = "1.2.1"
+# https://developer.android.com/jetpack/androidx/releases/test
+# Espresso: Android UI 테스트를 자동화할 수 있는 라이브러리
+androidxEspresso = "3.6.1"
+# https://androidx.tech/artifacts/compose.ui/ui-test-junit4-android/index.html
+# Compose UI Test JUnit 4: Jetpack Compose의 UI 테스트를 JUnit 4 기반에서 수행할 수 있는 라이브러리
+uiTestJunit4 = "1.7.3"
+# https://developer.android.com/jetpack/androidx/releases/test-uiautomator
+# UI Automator: Android UI 테스트를 자동화할 수 있는 라이브러리
+uiAutomator = "2.3.0"
+# https://developer.android.com/jetpack/androidx/releases/test
+# AndroidX Test Core: Android에서 테스트 환경을 제공하는 핵심 라이브러리
+androidxTestCore = "1.6.1"
+# https://mvnrepository.com/artifact/androidx.test/runner
+# Android Test Runner: 테스트를 실행하고 결과를 관리하는 도구
+androidxTestRunner = "1.6.2"
+# https://developer.android.com/jetpack/androidx/releases/test
+# AndroidX Test Rules: Android 테스트 규칙을 정의하고 테스트 실행 시 유용한 도구를 제공하는 라이브러리
+androidxTestRules = "1.6.1"
+# https://kotest.io/
+# Kotest: Kotlin 기반의 테스트 프레임워크로 다양한 테스트 스타일을 지원하는 라이브러리
+kotest = "5.9.0"
+# https://github.com/takahirom/roborazzi
+# Roborazzi: UI 테스트 스크린샷을 캡처하고 기록하는 도구
+roborazzi = "1.26.0"
+# https://github.com/robolectric/robolectric/releases
+# Robolectric: JVM에서 Android 코드를 테스트할 수 있도록 지원하는 프레임워크
+robolectric = "4.13"
+# https://mockk.io/
+# MockK: Kotlin에서 모의 객체를 쉽게 생성하고 관리할 수 있게 해주는 라이브러리
+mockk = "1.13.11"
+# https://github.com/cashapp/turbine
+# Turbine: Kotlin Coroutines의 플로우(Flow) 테스트를 위한 라이브러리
+turbine = "1.1.0"
+
+## 성능
+# https://androidx.tech/artifacts/benchmark/benchmark-baseline-profile-gradle-plugin/index.html
+# Benchmark Baseline Profile: 애플리케이션 성능을 측정하고 최적화하는 도구
+baselineProfile = "1.3.2"
+# https://developer.android.com/jetpack/androidx/releases/profileinstaller
+# Profile Installer: 성능 최적화를 위해 프로파일 설치를 관리하는 도구
+profileinstaller = "1.4.1"
+# https://developer.android.com/jetpack/androidx/releases/benchmark
+# Benchmark Macro JUnit4: 성능 벤치마크를 위한 JUnit4 기반의 테스트 도구
+benchmarkMacroJunit4 = "1.3.2"
+
+## Android 빌드
+# https://github.com/google/desugar_jdk_libs/blob/master/CHANGELOG.md
+# Desugar JDK Libraries: 자바 8 기능을 하위 Android 버전에서도 사용할 수 있게 해주는 라이브러리
+androidDesugarJdkLibs = "2.1.2"
+
+## 코드 정적 분석 도구
+# https://github.com/detekt/detekt
+# Detekt: Kotlin 코드를 정적 분석하고 스타일을 검사하는 도구
+detekt = "1.23.6"
+
+# -----------------------------------------------------------
+# [libraries]: 라이브러리 모듈 정의
+# -----------------------------------------------------------
 [libraries]
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+
+## AndroidX
+# AndroidX Core KTX: Kotlin 확장 기능을 제공하는 Android Core 라이브러리
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+# AndroidX AppCompat: Android 하위 호환성을 지원하는 라이브러리
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+## AndroidX Lifecycle 관련 라이브러리
+# AndroidX Lifecycle Runtime KTX: Android 생명주기를 관리하는 라이브러리
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+# AndroidX Lifecycle Runtime Compose: Jetpack Compose에서 생명주기를 관리하는 라이브러리
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
+# AndroidX ViewModel Compose: Compose와 함께 사용할 수 있는 생명주기 ViewModel 관리 라이브러리
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
+# AndroidX Activity Compose: Compose에서 Activity와의 상호작용을 지원하는 라이브러리
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
+# AndroidX Navigation Compose: Compose에서 화면 간의 내비게이션을 관리하는 라이브러리
+androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxComposeNavigation" }
+
+## Compose
+# AndroidX Compose BOM: Jetpack Compose 라이브러리 버전을 일괄적으로 관리하는 BOM
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+# AndroidX Compose UI: Jetpack Compose의 기본적인 UI 컴포넌트를 제공하는 라이브러리
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+# AndroidX Compose UI Tooling: UI 미리보기 및 개발 도구를 지원하는 라이브러리
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+# AndroidX Compose UI Tooling Preview: Jetpack Compose에서 UI 미리보기 기능을 제공하는 라이브러리
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+# AndroidX Compose UI Graphics: Jetpack Compose의 그래픽 처리 기능을 제공하는 라이브러리
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+# AndroidX Compose UI Test Manifest: Jetpack Compose UI 테스트를 위한 매니페스트 기능을 제공하는 라이브러리
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+# AndroidX Compose UI Text Google Fonts: Compose에서 Google 폰트를 쉽게 사용할 수 있게 해주는 라이브러리
+androidx-compose-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
+# AndroidX Compose UI Util: Jetpack Compose에서 다양한 유틸리티 기능을 제공하는 라이브러리
+androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
+# AndroidX Compose UI ViewBinding: Compose에서 ViewBinding을 지원하는 라이브러리
+androidx-compose-ui-viewbinding = { group = "androidx.compose.ui", name = "ui-viewbinding" }
+# AndroidX Compose Material3: Material Design 3를 지원하는 UI 컴포넌트를 제공하는 라이브러리
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+# AndroidX Compose Animation Graphics: Jetpack Compose에서 애니메이션을 위한 그래픽 기능을 제공하는 라이브러리
+androidx-compose-animation-graphics = { group = "androidx.compose.animation", name = "animation-graphics" }
+# AndroidX Compose Foundation: Compose의 기본 레이아웃과 UI 요소를 제공하는 라이브러리
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+# AndroidX Compose Foundation Layout: Compose의 레이아웃 관련 기능을 제공하는 라이브러리
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
+# AndroidX Compose Material: Material Design 2 기반의 UI 컴포넌트를 제공하는 라이브러리
+androidx-compose-material = { group = "androidx.compose.material", name = "material" }
+# AndroidX Compose Material Icons Extended: Material 아이콘 확장 라이브러리
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+# AndroidX Compose Runtime: Jetpack Compose의 핵심적인 런타임 기능을 제공하는 라이브러리
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+# AndroidX Compose Runtime LiveData: Jetpack Compose에서 LiveData와 연동하여 사용할 수 있게 해주는 라이브러리
+androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 
+## Material
+# Material Components: 구글의 Material Design 가이드라인을 기반으로 UI 컴포넌트를 제공하는 라이브러리
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+## Hilt
+# Hilt Core: Hilt 의존성 주입의 핵심 모듈로 Android의 다양한 컴포넌트에서 DI를 쉽게 사용할 수 있게 해주는 라이브러리
+hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hilt" }
+# Hilt Android: Android에서 Hilt 의존성 주입을 지원하는 라이브러리
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+# Hilt Android Testing: Hilt 의존성 주입을 테스트 환경에서 사용할 수 있게 해주는 라이브러리
+hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
+# Hilt Android Compiler: Hilt 의존성 주입을 위한 컴파일 타임 코드 생성 라이브러리
+hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+# Hilt Navigation Compose: Jetpack Compose에서 Hilt를 통합하여 사용할 수 있도록 지원하는 라이브러리
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+## 의존성 주입
+# Inject: 의존성 주입을 위한 표준 어노테이션을 제공하는 라이브러리 (Hilt나 Dagger와 무관하게 사용 가능)
+inject = { module = "javax.inject:javax.inject", version = "1" }
+
+## 네트워크
+# OkHttp Logging Interceptor: 네트워크 요청과 응답을 로그로 출력할 수 있게 해주는 OkHttp의 확장 라이브러리
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+# Retrofit Core: REST API 통신을 쉽게 처리할 수 있게 해주는 Retrofit의 핵심 라이브러리
+retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+# Retrofit Kotlin Serialization Converter: Retrofit에서 Kotlinx Serialization을 사용할 수 있게 해주는 컨버터 라이브러리
+retrofit-kotlin-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "retrofit" }
+
+## kotlin
+# kotlinx-immutable: Kotlin에서 불변 컬렉션을 제공하는 라이브러리
+kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
+
+## Coroutine
+# Kotlin Coroutines Core: 코루틴의 핵심 기능을 제공하는 라이브러리
+coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutine" }
+# Kotlin Coroutines Android: Android에서 코루틴을 사용할 수 있게 해주는 라이브러리
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutine" }
+# Kotlin Coroutines Test: 코루틴 기반 테스트를 지원하는 라이브러리
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutine" }
+
+## 테스트
+# JUnit: 단위 테스트를 위한 Java 기반 테스트 프레임워크
+junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+# AndroidX JUnit Extension: Android에서 JUnit을 확장하여 Android 환경에서 테스트를 실행할 수 있게 해주는 라이브러리
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExt" }
+# AndroidX JUnit KTX: Android 환경에서 Kotlin 확장 기능을 제공하여 테스트를 쉽게 작성할 수 있도록 지원하는 라이브러리
+androidx-test-ext = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidxTestExt" }
+# Espresso Core: Android UI 테스트를 위한 자동화 도구
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
+# Compose UI Test JUnit4: Jetpack Compose의 UI 테스트를 JUnit4에서 사용할 수 있게 해주는 라이브러리
+androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "uiTestJunit4" }
+# AndroidX UI Automator: UI 테스트 자동화를 위한 라이브러리
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiAutomator" }
+# AndroidX Test Core: Android 테스트 환경을 제공하는 핵심 라이브러리
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
+# AndroidX Test Runner: Android 테스트 실행 도구
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+# AndroidX Test Rules: Android 테스트 규칙을 정의하고 테스트를 실행할 때 유용한 도구를 제공하는 라이브러리
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTestRules" }
+# JUnit Vintage Engine: JUnit5에서 JUnit4 테스트를 실행할 수 있게 해주는 호환성 라이브러리
+junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junitVintageEngine" }
+# Roborazzi: UI 테스트의 스크린샷을 저장하고 비교하는 도구
+roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", version.ref = "roborazzi" }
+# Roborazzi Rule: Roborazzi의 JUnit Rule을 제공하는 라이브러리
+roborazziRule = { module = "io.github.takahirom.roborazzi:roborazzi-junit-rule", version.ref = "roborazzi" }
+# Roborazzi Compose: Roborazzi의 Jetpack Compose 지원 라이브러리
+roborazziCompose = { module = "io.github.takahirom.roborazzi:roborazzi-compose", version.ref = "roborazzi" }
+# Robolectric: Android 테스트를 JVM에서 실행할 수 있도록 지원하는 라이브러리
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+# MockK: Kotlin을 위한 모킹 라이브러리
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+# Turbine: Coroutine Flow를 테스트할 수 있도록 지원하는 라이브러리
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+# Kotest Runner: Kotest의 JUnit5 기반 테스트 실행 라이브러리
+kotest-runner = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
+# Kotest Assertions: 다양한 Assertion 기능을 제공하는 Kotest의 핵심 라이브러리
+kotest-assertions = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
+
+## 성능
+# Benchmark Baseline Profile: 애플리케이션의 성능을 측정하고 최적화하는 도구
+baselineProfile = { group = "androidx.benchmark", name = "benchmark-baseline-profile", version.ref = "baselineProfile" }
+# Benchmark Macro JUnit4: 성능 벤치마크를 위한 JUnit4 기반의 테스트 도구
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmarkMacroJunit4" }
+# Profile Installer: 성능 최적화를 위해 프로파일 설치를 관리하는 라이브러리
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
+
+## Android 빌드
+# Desugar JDK Libraries: Java 8 기능을 하위 Android 버전에서도 사용할 수 있게 해주는 라이브러리
+android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
+
+## 정적 분석
+# Detekt Formatting: Detekt의 코드 포맷팅 검사 기능을 제공하는 라이브러리
+verify-detektFormatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+
+# -----------------------------------------------------------
+# [buildLogic]: 빌드 로직에 필요한 의존성 정의 (별도로 관리)
+# -----------------------------------------------------------
+
+# Android Gradle Plugin: Android 애플리케이션과 라이브러리를 빌드하는 데 필요한 필수 Gradle 플러그인
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+
+# Kotlin Gradle Plugin: Kotlin 프로젝트 빌드를 위한 필수 플러그인
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+
+# Compose Compiler Gradle Plugin: Jetpack Compose 컴파일과 관련된 빌드 최적화 및 도구를 제공하는 Gradle 의존성
+compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+
+# Detekt Gradle Plugin: Kotlin 코드 정적 분석 및 스타일 검사를 위한 Gradle 플러그인
+verify-detektPlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+
+# -----------------------------------------------------------
+# [plugins]: 프로젝트에서 사용하는 Gradle 플러그인 정의
+# -----------------------------------------------------------
 [plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
+# Android Application Plugin: Android 애플리케이션 개발을 위한 필수 플러그인
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+
+# Android Library Plugin: Android 라이브러리 개발을 위한 필수 플러그인
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+
+# Kotlin Android Plugin: Android에서 Kotlin을 사용할 수 있게 해주는 플러그인
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+# Kotlin JVM Plugin: JVM에서 Kotlin을 사용할 수 있게 해주는 플러그인
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+
+# Kotlin Serialization Plugin: Kotlin 직렬화를 지원하는 플러그인
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+# Jetpack Compose Compiler Plugin: 컴파일러가 Compose 코드를 처리할 수 있게 해주는 플러그인
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+# Kotlin Symbol Processing (KSP) Plugin: Kotlin 애노테이션 프로세싱을 지원하는 플러그인
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+# Hilt Plugin: Hilt 의존성 주입을 Android 애플리케이션에서 사용할 수 있게 해주는 플러그인
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
+# Detekt Plugin: Kotlin 코드 정적 분석과 스타일 검사를 위한 플러그인
+verify-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+
+# Benchmark Baseline Profile Plugin: 성능 최적화를 위한 Baseline Profile 생성을 지원하는 플러그인
+androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineProfile" }
+
+# Roborazzi Plugin: UI 테스트에서 스크린샷을 캡처하고 기록할 수 있게 해주는 플러그인
+roborazzi-plugin = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
+
+# -----------------------------------------------------------
+# [bundles]: 여러 라이브러리를 묶어서 사용해야 할 경우 번들 정의
+# -----------------------------------------------------------
+[bundles]
