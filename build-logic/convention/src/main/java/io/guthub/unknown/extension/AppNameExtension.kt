@@ -1,4 +1,4 @@
-package io.unknown.extension
+package io.guthub.unknown.extension
 
 import org.gradle.api.Project
 

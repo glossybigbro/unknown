@@ -1,4 +1,4 @@
-package io.unknown.configure
+package io.guthub.unknown.configure
 
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project

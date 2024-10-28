@@ -1,4 +1,4 @@
-package io.unknown.ui.theme
+package io.github.unknown.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

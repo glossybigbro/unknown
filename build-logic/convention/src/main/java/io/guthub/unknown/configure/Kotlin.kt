@@ -1,4 +1,4 @@
-package io.unknown.configure
+package io.guthub.unknown.configure
 
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.assign

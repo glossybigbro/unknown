@@ -1,4 +1,4 @@
-package io.unknown
+package io.github.unknown
 
 import org.junit.Test
 

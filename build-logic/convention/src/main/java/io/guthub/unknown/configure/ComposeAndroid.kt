@@ -1,7 +1,7 @@
-package io.unknown.configure
+package io.guthub.unknown.configure
 
-import io.unknown.extension.androidExtension
-import io.unknown.extension.libs
+import io.guthub.unknown.extension.androidExtension
+import io.guthub.unknown.extension.libs
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.provider.Provider

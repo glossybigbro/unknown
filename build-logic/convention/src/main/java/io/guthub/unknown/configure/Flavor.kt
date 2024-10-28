@@ -1,11 +1,11 @@
 @file:Suppress("EnumEntryName")
 
-package io.unknown.configure
+package io.guthub.unknown.configure
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.ApplicationProductFlavor
 import com.android.build.api.dsl.ProductFlavor
-import io.unknown.extension.applicationExtension
+import io.guthub.unknown.extension.applicationExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
