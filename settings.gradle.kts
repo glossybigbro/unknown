@@ -22,5 +22,28 @@ dependencyResolutionManagement {
     }
 }
 
+//https://issuetracker.google.com/issues/328871352
+//gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:convention:testClasses"))
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "unknown"
 include(":app")
+
+// core
+include(
+    ":core:data",
+    ":core:data-api",
+    ":core:datastore",
+    ":core:designsystem",
+    ":core:domain",
+    ":core:testing",
+    ":core:ui",
+)
+
+// Feature
+include(
+    ":feature:home",
+    ":feature:main",
+)
+include(":core:model")

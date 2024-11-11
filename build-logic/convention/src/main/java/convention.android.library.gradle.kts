@@ -1,5 +1,5 @@
-import io.guthub.unknown.configure.configureCoroutineAndroid
-import io.guthub.unknown.configure.configureKotlinAndroid
+import io.guthub.unknown.convention.configure.configureCoroutineAndroid
+import io.guthub.unknown.convention.configure.configureKotlinAndroid
 
 plugins {
     id("com.android.library")
