@@ -1,0 +1,161 @@
+// from: https://github.com/DroidKaigi/conference-app-2021/blob/main/gradle/dependencyGraph.gradle
+// from: https://github.com/JakeWharton/SdkSearch/blob/3351cad9bfacb0a364858e843774147143f58c7a/gradle/projectDependencyGraph.gradle
+// 새로운 Gradle 작업 'projectDependencyGraph' 등록
+tasks.register('projectDependencyGraph') {
+    doLast {
+        // 프로젝트 의존성 그래프를 저장할 .dot 파일의 이름 설정
+        def dotFileName = 'project.dot'
+
+        // 프로젝트 루트 디렉토리에 .dot 파일 객체 생성 및 초기화
+        def dotFile = new File(rootProject.rootDir, dotFileName)
+        dotFile.parentFile.mkdirs() // 디렉토리 경로가 없으면 생성
+        dotFile.delete() // 기존 파일이 있으면 삭제하여 초기화
+
+        // Graphviz 설정: 그래프의 전반적인 설정을 작성
+        dotFile << 'digraph {\n' // Graphviz의 방향성 그래프 시작
+        dotFile << "  graph [label=\"${rootProject.name}\\n\", labelloc=t, fontsize=30, ranksep=1.4];\n" // 그래프 라벨 설정
+        dotFile << '  node [style=filled, fillcolor="#bbbbbb"];\n' // 기본 노드 스타일 및 색상
+        dotFile << '  rankdir=TB;\n' // 그래프 방향 (상단에서 하단)
+
+        // 루트 프로젝트들을 저장할 리스트 초기화
+        def rootProjects = []
+        def queue = [rootProject] // BFS 탐색을 위한 큐로 초기화
+
+        // BFS 탐색: 큐에 있는 프로젝트와 하위 프로젝트들을 반복 탐색하여 루트 프로젝트를 수집
+        while (!queue.isEmpty()) {
+            def project = queue.remove(0) // 큐에서 첫 번째 프로젝트 추출
+            rootProjects.add(project) // 루트 프로젝트 리스트에 추가
+            queue.addAll(project.childProjects.values()) // 하위 프로젝트들을 큐에 추가
+        }
+
+        // 중복을 허용하지 않는 프로젝트 집합 및 의존성 관계를 저장할 자료구조 초기화
+        def projects = new LinkedHashSet<Project>() // 모든 프로젝트를 저장
+        def dependencies = new LinkedHashMap<Tuple2<Project, Project>, List<String>>() // 프로젝트 간 의존성 관계
+
+        // 프로젝트 유형별 분류를 위한 빈 리스트 초기화
+        def categorizedProjects = [
+                multiplatform: [],         // Kotlin 멀티플랫폼 프로젝트
+                js: [],                    // JS 프로젝트
+                androidApp: [],            // Android 애플리케이션 프로젝트
+                androidLib: [],            // Android 라이브러리 프로젝트
+                androidFeature: [],        // Android 동적 기능 프로젝트
+                java: []                   // Java 프로젝트
+        ]
+
+        // 큐 초기화 후 BFS 탐색을 통해 프로젝트 분류 및 의존성 분석
+        queue = [rootProject]
+        while (!queue.isEmpty()) {
+            def project = queue.remove(0) // 큐에서 첫 번째 프로젝트 추출
+            queue.addAll(project.childProjects.values()) // 하위 프로젝트들을 큐에 추가
+
+            // 각 프로젝트의 플러그인 타입을 기준으로 분류
+            if (project.plugins.hasPlugin('org.jetbrains.kotlin.multiplatform')) {
+                categorizedProjects.multiplatform.add(project)
+            }
+            if (project.plugins.hasPlugin('kotlin2js')) {
+                categorizedProjects.js.add(project)
+            }
+            if (project.plugins.hasPlugin('com.android.application')) {
+                categorizedProjects.androidApp.add(project)
+            }
+            if (project.plugins.hasPlugin('com.android.library')) {
+                categorizedProjects.androidLib.add(project)
+            }
+            if (project.plugins.hasPlugin('com.android.dynamic-feature')) {
+                categorizedProjects.androidFeature.add(project)
+            }
+            if (project.plugins.hasPlugin('java-library') || project.plugins.hasPlugin('java')) {
+                categorizedProjects.java.add(project)
+            }
+
+            // 각 프로젝트의 의존성을 분석하여 의존 관계를 기록
+            project.configurations.configureEach { config ->
+                // 테스트 관련 의존성은 건너뜀
+                if (config.name.toLowerCase().contains("test")) return
+
+                // 프로젝트 간 의존성 필터링 후 수집
+                config.dependencies
+                        .withType(ProjectDependency) // 프로젝트 간 의존성만 포함
+                        .collect { it.dependencyProject } // 의존 프로젝트 추출
+                        .each { dependency ->
+                            projects.add(project) // 현재 프로젝트를 프로젝트 리스트에 추가
+                            projects.add(dependency) // 의존 프로젝트도 추가
+                            rootProjects.remove(dependency) // 의존이 있는 프로젝트는 루트에서 제거
+
+                            // 'implementation' 의존성은 점선 스타일로 표시
+                            if (config.name.toLowerCase().endsWith('implementation')) {
+                                def graphKey = new Tuple2<Project, Project>(project, dependency)
+                                def traits = dependencies.computeIfAbsent(graphKey) { new ArrayList<String>() }
+                                traits.add('style=dotted') // 점선 스타일 추가
+                            }
+                        }
+            }
+        }
+
+        // 프로젝트를 경로를 기준으로 정렬
+        projects = projects.sort { it.path }
+
+        // .dot 파일에 프로젝트 노드 정보 기록
+        dotFile << '\n  # Projects\n\n'
+        for (project in projects) {
+            def traits = [] // 노드 스타일을 저장할 리스트
+
+            // 루트 프로젝트는 상자 모양으로 표시
+            if (rootProjects.contains(project)) {
+                traits.add('shape=box')
+            }
+
+            // 각 프로젝트 유형에 따른 색상 설정
+            if (categorizedProjects.multiplatform.contains(project)) {
+                traits.add('fillcolor="#ffd2b3"') // 멀티플랫폼 프로젝트 - 주황색
+            } else if (categorizedProjects.js.contains(project)) {
+                traits.add('fillcolor="#ffffba"') // JS 프로젝트 - 노란색
+            } else if (categorizedProjects.androidApp.contains(project)) {
+                traits.add('fillcolor="#baffc9"') // Android 앱 - 연두색
+            } else if (categorizedProjects.androidLib.contains(project)) {
+                traits.add('fillcolor="#81D4FA"') // Android 라이브러리 - 파란색
+            } else if (categorizedProjects.androidFeature.contains(project)) {
+                traits.add('fillcolor="#c9baff"') // Android 동적 기능 - 보라색
+            } else if (categorizedProjects.java.contains(project)) {
+                traits.add('fillcolor="#ffb3ba"') // Java 프로젝트 - 분홍색
+            } else {
+                traits.add('fillcolor="#eeeeee"') // 기타 프로젝트 - 회색
+            }
+
+            // 각 프로젝트 노드 정보 .dot 파일에 기록
+            dotFile << "  \"${project.path}\" [${traits.join(", ")}];\n"
+        }
+
+        // 동일한 순위의 루트 프로젝트들을 한 줄에 배치
+        dotFile << '\n  {rank = same;'
+        for (project in projects) {
+            if (rootProjects.contains(project)) {
+                dotFile << " \"${project.path}\";"
+            }
+        }
+        dotFile << '}\n'
+
+        // 의존성 관계를 .dot 파일에 기록
+        dotFile << '\n  # Dependencies\n\n'
+        dependencies.forEach { key, traits ->
+            dotFile << "  \"${key.first.path}\" -> \"${key.second.path}\"" // 프로젝트 간 의존성
+            if (!traits.isEmpty()) {
+                dotFile << " [${traits.join(", ")}]" // 스타일 적용 (점선 등)
+            }
+            dotFile << '\n'
+        }
+        dotFile << '}\n' // digraph 종료
+
+        // Graphviz 명령어를 통해 .dot 파일을 PNG로 변환
+        def graphvizCommand = "dot -Tpng -O ${dotFileName}"
+        def process = graphvizCommand.execute([], dotFile.parentFile)
+        process.waitFor() // Graphviz가 실행을 마칠 때까지 대기
+        if (process.exitValue() != 0) {
+            throw new RuntimeException(process.errorStream.text) // 오류 발생 시 예외 던짐
+        }
+        dotFile.delete() // .dot 파일 삭제 (이미지 생성 후 불필요)
+
+        // 성공적으로 그래프 생성 완료 메시지 출력
+        println("Project module dependency graph created at ${dotFile.absolutePath}.png")
+    }
+}
