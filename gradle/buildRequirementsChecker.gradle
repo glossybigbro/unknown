@@ -1,0 +1,225 @@
+//file:noinspection GrMethodMayBeStatic
+import java.awt.Desktop
+
+// 상수 관리 객체: 빌드 요구사항에서 사용하는 상수들을 모아 관리
+class Const {
+    static String MINIMUM_JVM_VERSION = ""  // 최소 JVM 버전 (gradle.properties에서 설정됨)
+    static final Set<String> ACCEPTABLE_JVM_VERSIONS = new HashSet<>(["17"])  // 허용되는 JVM 버전 목록 (기본값은 17)
+    static final String JAVA_REQUIREMENT_DOC = "https://github.com/hellomarket-projects/newoff-android/wiki/Minimum-Java-Version-Requirement"  // JVM 요구사항 문서 URL
+    static final String GIT_REQUIREMENT_DOC = "https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup"  // Git 초기 설정 문서 URL
+
+    static final long MINIMUM_MEMORY_MB = 8000  // 최소 메모리 요구량 8GB
+}
+
+// 빌드 요구 사항 확인
+void checkBuildRequirements() {
+    if (!shouldCheckBuildRequirements()) return  // 빌드 요구 사항 체크가 필요한지 확인 (환경 변수 확인)
+
+    checkJvmVersion()        // JVM 버전 확인
+//    checkRosetta()           // Rosetta 환경 확인 (MacOS 전용)
+    checkGitConfiguration()  // Git 설정 확인
+//    checkGitLFSConfiguration() // Git LFS 설정 확인
+//    checkWindowsSymlink()    // Windows에서 심볼릭 링크 설정 확인
+    checkAvailableMemory()   // 시스템 메모리 확인 (JVM과 시스템의 메모리 비교)
+}
+
+// 빌드 요구 사항 체크가 필요한지 확인: 환경 변수 'build.check.requires'의 값이 true로 설정되었는지 확인
+boolean shouldCheckBuildRequirements() {
+    def checkRequires = System.getProperty("build.check.requires", "false")  // 환경 변수 확인
+    return checkRequires.equalsIgnoreCase("true")  // true이면 빌드 요구사항 확인을 계속 진행
+}
+
+// JVM 버전 확인: 사용 중인 JVM 버전이 허용된 버전인지 확인
+void checkJvmVersion() {
+    Const.MINIMUM_JVM_VERSION = System.getProperty("build.jvmtarget.host", "")  // 최소 JVM 버전을 환경 변수에서 가져옴
+    if (Const.MINIMUM_JVM_VERSION.isEmpty()) {
+        throw new GradleException("JVM target version is not defined. Please set 'build.jvmtarget.host'.")  // JVM 버전이 정의되지 않으면 예외 발생
+    }
+    Const.ACCEPTABLE_JVM_VERSIONS.add(Const.MINIMUM_JVM_VERSION)  // 허용되는 JVM 버전에 최소 버전을 추가
+
+    String currentJvmVersion = System.getProperty("java.specification.version")  // 현재 JVM 버전 확인
+    String javaHome = System.getProperty("java.home")  // JVM 경로 확인
+
+    // 현재 JVM 버전이 허용된 버전 목록에 없으면 가이드 문서를 보여주고 예외를 발생시킴
+    if (!Const.ACCEPTABLE_JVM_VERSIONS.contains(currentJvmVersion)) {
+        showGuideAndThrow(Const.JAVA_REQUIREMENT_DOC,
+                "You are currently using Java version: ${currentJvmVersion} located at: ${javaHome}. " +
+                        "Please switch to the JetBrains Runtime version ${Const.MINIMUM_JVM_VERSION}, " +
+                        "or use the JDK ${Const.MINIMUM_JVM_VERSION} LTS version for compatibility.")
+    }
+}
+
+// Rosetta 환경 확인: MacOS에서 Rosetta 번역 환경이 사용 중인지 확인
+void checkRosetta() {
+    if (getOperatingSystem() == "mac") {  // MacOS인지 확인
+        def isRosetta = executeCommandAndGetResult(["sysctl", "-n", "sysctl.proc_translated"]).trim() == "1"  // Rosetta 확인
+        if (isRosetta) {
+            throw new GradleException("The build is running under Rosetta. Please check your Android Studio settings.")  // Rosetta 사용 시 예외 발생
+        }
+    }
+}
+
+// Git 설정 확인: Git이 설치되어 있는지, 사용자 정보가 설정되어 있는지 확인
+void checkGitConfiguration() {
+    def gitVersion = executeCommandAndGetResult(["git", "--version"])  // Git 버전 확인
+    if (!gitVersion.contains("git version")) {
+        throw new GradleException("Git is not installed or not available in PATH.")  // Git이 없으면 예외 발생
+    }
+
+    // Git 사용자 정보 확인
+    def userName = executeCommandAndGetResult(["git", "config", "--global", "user.name"])
+    def userEmail = executeCommandAndGetResult(["git", "config", "--global", "user.email"])
+
+    // Git 사용자 정보가 없으면 예외 발생
+    if (!userName || !userEmail) {
+        showGuideAndThrow(Const.GIT_REQUIREMENT_DOC, "Git is not properly configured. Please set up your Git user.name and user.email.")
+    }
+}
+
+// Git LFS 설정 확인: Git LFS가 설치되어 있는지, 트래킹 규칙이 설정되어 있는지 확인
+void checkGitLFSConfiguration() {
+    def gitLfsVersion = executeCommandAndGetResult(["git", "lfs", "version"])  // Git LFS 버전 확인
+    if (!gitLfsVersion.contains("git-lfs")) {
+        throw new GradleException("Git LFS is not installed. Please install Git LFS to handle large files.")  // Git LFS가 없으면 예외 발생
+    }
+
+    // Git LFS 트래킹 규칙 확인
+    def lfsTrackStatus = executeCommandAndGetResult(["git", "lfs", "track"])
+    if (!lfsTrackStatus) {
+        println("No LFS tracking rules are set. If your project uses large files, please configure Git LFS.")  // 트래킹 규칙이 없으면 경고 메시지 출력
+    }
+}
+
+// Windows에서 심볼릭 링크 설정 확인: Windows에서 심볼릭 링크 설정이 활성화되어 있는지 확인
+void checkWindowsSymlink() {
+    if (getOperatingSystem() == "windows") {  // Windows인지 확인
+        def devMode = executeCommandAndGetResult(["powershell", "-Command", "Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux"]).trim()  // 심볼릭 링크 확인
+        if (!devMode.contains("Enabled")) {
+            throw new GradleException("Symbolic links require Developer Mode or Administrator privileges in Windows.")  // 설정이 비활성화되어 있으면 예외 발생
+        }
+    }
+}
+
+// 시스템 메모리 확인: 시스템 메모리와 JVM 메모리가 최소 요구 사항을 충족하는지 확인
+void checkAvailableMemory() {
+    def totalSystemMemoryMB = getSystemMemoryInMB()  // 시스템 메모리 확인
+    def totalJvmMemoryMB = Runtime.getRuntime().maxMemory() / (1024 * 1024)  // JVM 메모리 확인
+
+    // 메모리가 부족하면 예외 발생
+    if (totalJvmMemoryMB < Const.MINIMUM_MEMORY_MB || totalSystemMemoryMB < Const.MINIMUM_MEMORY_MB) {
+        def recommendedMemory = Math.max(Const.MINIMUM_MEMORY_MB, totalSystemMemoryMB - 500)  // 여유분을 남긴 JVM 메모리 설정 제안
+        throw new GradleException("Insufficient memory. The system has $totalSystemMemoryMB MB, and JVM has $totalJvmMemoryMB MB. " +
+                "At least ${Const.MINIMUM_MEMORY_MB}MB of memory is required. " +
+                "To increase the JVM memory allocation, modify your gradle.properties file or add the following to your command line:\n" +
+                "org.gradle.jvmargs=-Xmx${recommendedMemory}m")
+    }
+    println("System memory: $totalSystemMemoryMB MB, JVM memory: $totalJvmMemoryMB MB. Memory requirements are met.")
+}
+
+// 운영체제에 따른 시스템 메모리 확인: 각 운영체제에서 시스템 메모리 크기를 가져옴
+def getSystemMemoryInMB() {
+    switch (getOperatingSystem()) {
+        case "windows":
+            def totalMemory = executeCommandAndGetResult(["systeminfo", "|", "findstr", "/C:\"Total Physical Memory\""])  // Windows에서 시스템 메모리 확인
+            return extractMemoryFromOutput(totalMemory, "windows")
+        case "mac":
+            def totalMemory = executeCommandAndGetResult(["sysctl", "hw.memsize"])  // MacOS에서 시스템 메모리 확인
+            return extractMemoryFromOutput(totalMemory, "mac")
+        case "linux":
+            def totalMemory = executeCommandAndGetResult(["free", "-m"])  // Linux에서 시스템 메모리 확인
+            return extractMemoryFromOutput(totalMemory, "linux")
+        default:
+            throw new GradleException("Unsupported OS for memory check.")  // 지원하지 않는 OS일 경우 예외 발생
+    }
+}
+
+// 명령어 출력에서 메모리 크기를 추출: 각 운영체제에서 출력된 메모리 정보를 파싱하여 메모리 크기를 반환
+def extractMemoryFromOutput(String output, String osType) {
+    switch (osType) {
+        case "windows":
+            // Windows에서 메모리 크기 추출
+            def matcher = output =~ /Total Physical Memory:\s+([\d,]+)\s+MB/
+            if (matcher) {
+                return matcher[0][1].replace(",", "").toInteger()  // 쉼표 제거 후 정수형으로 변환
+            } else {
+                throw new GradleException("Failed to extract memory information from Windows systeminfo output.")
+            }
+        case "mac":
+            return output.toLong() / (1024 * 1024)  // MacOS에서는 bytes 단위로 출력되므로 MB로 변환
+        case "linux":
+            def lines = output.split("\n")
+            if (lines.size() > 1) {
+                return lines[1].split()[1].toInteger()  // Linux에서 free 명령어의 두 번째 줄에서 메모리 추출
+            } else {
+                throw new GradleException("Failed to extract memory information from Linux free output.")
+            }
+        default:
+            throw new GradleException("Unsupported OS for memory parsing.")  // 지원하지 않는 OS일 경우 예외 발생
+    }
+}
+
+// 시스템 명령어 실행 후 결과를 반환: 명령어를 실행하고 그 결과를 반환
+String executeCommandAndGetResult(List<String> command) {
+    ByteArrayOutputStream output = new ByteArrayOutputStream()
+
+    try (Process process = new ProcessBuilder(command).start()) {
+        captureStream(process.getInputStream(), output)  // 표준 출력 처리
+        captureStream(process.getErrorStream(), output)  // 에러 출력 처리
+
+        int exitValue = process.waitFor()  // 명령어 실행 종료 코드 확인
+        if (exitValue != 0) {
+            throw new RuntimeException("Command failed with exit code: " + exitValue + ". Command: " + command)
+        }
+        return output.toString().trim()  // 명령어 결과 반환
+    } catch (IOException e) {
+        throw new RuntimeException("Failed to execute command: " + command, e)
+    }
+}
+
+// 입력 스트림을 읽어 출력 스트림에 쓰는 기능: 프로세스의 입력 스트림 데이터를 읽고 출력 스트림에 씀
+void captureStream(InputStream inputStream, ByteArrayOutputStream output) {
+    try {
+        inputStream.withCloseable {  // withCloseable을 사용하여 InputStream을 안전하게 닫음
+            int byteRead
+            byte[] buffer = new byte[1024]  // 1KB 단위로 데이터를 읽어옴
+            while ((byteRead = inputStream.read(buffer)) != -1) {
+                output.write(buffer, 0, byteRead)  // 버퍼의 내용을 출력 스트림에 씀
+            }
+        }
+    } catch (IOException e) {  // 스트림 읽기 중 IO 관련 예외 처리
+        throw new RuntimeException("Error while reading stream: " + e.getMessage(), e)  // 에러 메시지 및 예외 처리
+    } catch (Exception e) {  // 예상하지 못한 모든 예외 처리
+        throw new RuntimeException("Unexpected error while processing stream: " + e.getMessage(), e)  // 모든 예외에 대해 처리
+    }
+}
+
+// 가이드 페이지를 출력하고 예외를 발생: URL을 브라우저로 열고 예외 발생
+void showGuideAndThrow(String url, String message) {
+    try {
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+            Desktop.getDesktop().browse(new URI(url))  // 브라우저로 URL을 열음
+        } else {
+            throw new UnsupportedOperationException("Desktop or browser opening is not supported.")
+        }
+    } catch (Exception ignored) {
+        println("Unable to open the URL: $url. Please manually check this URL in your browser.")
+    }
+    throw new GradleException(message)  // 예외 발생
+}
+
+// 운영체제 확인: 시스템의 운영체제를 확인하고 반환
+String getOperatingSystem() {
+    String os = System.getProperty("os.name").toLowerCase().trim()
+    if (os.contains("os x") || os.contains("mac") || os.contains("macos")) {
+        return "mac"  // MacOS
+    } else if (os.contains("windows")) {
+        return "windows"  // Windows
+    } else if (os.contains("linux")) {
+        return "linux"  // Linux
+    } else {
+        throw new GradleException("Unsupported operating system: " + os + ". Please verify your environment.")  // 알 수 없는 운영체제 예외 처리
+    }
+}
+
+// 빌드 요구 사항 확인 시작
+checkBuildRequirements()

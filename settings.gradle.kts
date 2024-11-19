@@ -1,4 +1,6 @@
 pluginManagement {
+    apply(from = "$rootDir/gradle/buildRequirementsChecker.gradle")
+
     includeBuild("build-logic")
     repositories {
         google {
