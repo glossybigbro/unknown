@@ -5,7 +5,7 @@ import java.awt.Desktop
 class Const {
     static String MINIMUM_JVM_VERSION = ""  // 최소 JVM 버전 (gradle.properties에서 설정됨)
     static final Set<String> ACCEPTABLE_JVM_VERSIONS = new HashSet<>(["17"])  // 허용되는 JVM 버전 목록 (기본값은 17)
-    static final String JAVA_REQUIREMENT_DOC = "https://github.com/hellomarket-projects/newoff-android/wiki/Minimum-Java-Version-Requirement"  // JVM 요구사항 문서 URL
+    static final String JAVA_REQUIREMENT_DOC = "https://github.com/glossybigbro/unknown/wiki/Minimum-Java-Version-Requirement"  // JVM 요구사항 문서 URL
     static final String GIT_REQUIREMENT_DOC = "https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup"  // Git 초기 설정 문서 URL
 
     static final long MINIMUM_MEMORY_MB = 8000  // 최소 메모리 요구량 8GB
